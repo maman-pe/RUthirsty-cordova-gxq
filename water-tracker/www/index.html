@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: https://ssl.gstatic.com 'unsafe-eval'; style-src 'self' 'unsafe-inline'; media-src *; img-src 'self' data: content:;">
+        <meta name="format-detection" content="telephone=no">
+        <meta name="msapplication-tap-highlight" content="no">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="css/index.css">
+        <title>喝水打卡</title>
+    </head>
+    <body>
+        <div class="app">
+            <div class="header">
+                <h1>喝水打卡</h1>
+                <div class="today-count">
+                    <p>今日已喝水</p>
+                    <p class="count-number" id="todayCount">0</p>
+                    <p>次</p>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <button id="checkInBtn" class="check-in-btn">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                        <path d="M40 10C40 10 30 15 30 25C30 35 40 40 40 40C40 40 50 35 50 25C50 15 40 10 40 10Z" fill="white"/>
+                        <path d="M25 45C25 45 20 50 20 55C20 60 25 65 30 65H50C55 65 60 60 60 55C60 50 55 45 55 45" stroke="white" stroke-width="3" fill="none"/>
+                    </svg>
+                    <span>打卡</span>
+                </button>
+            </div>
+
+            <div class="records-section">
+                <h2>今日记录</h2>
+                <div id="recordsList" class="records-list">
+                    <p class="empty-message">暂无记录，点击上方按钮开始打卡</p>
+                </div>
+            </div>
+        </div>
+        <script src="cordova.js"></script>
+        <script src="js/index.js"></script>
+    </body>
+</html>

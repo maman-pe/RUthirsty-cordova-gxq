@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+        <meta name="color-scheme" content="light dark">
+        <link rel="stylesheet" href="css/index.css">
+        <title>喝水打卡 - 浏览器测试版</title>
+    </head>
+    <body>
+        <div class="app">
+            <div class="header">
+                <h1>喝水打卡</h1>
+                <div class="today-count">
+                    <p>今日已喝水</p>
+                    <p class="count-number" id="todayCount">0</p>
+                    <p>次</p>
+                </div>
+            </div>
+
+            <div class="main-content">
+                <button id="checkInBtn" class="check-in-btn">
+                    <svg width="80" height="80" viewBox="0 0 80 80" fill="none">
+                        <path d="M40 10C40 10 30 15 30 25C30 35 40 40 40 40C40 40 50 35 50 25C50 15 40 10 40 10Z" fill="white"/>
+                        <path d="M25 45C25 45 20 50 20 55C20 60 25 65 30 65H50C55 65 60 60 60 55C60 50 55 45 55 45" stroke="white" stroke-width="3" fill="none"/>
+                    </svg>
+                    <span>打卡</span>
+                </button>
+            </div>
+
+            <div class="records-section">
+                <h2>今日记录</h2>
+                <div id="recordsList" class="records-list">
+                    <p class="empty-message">暂无记录，点击上方按钮开始打卡</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 浏览器测试版本的JavaScript -->
+        <script>
+            const STORAGE_KEY = 'waterRecords';
+            const DATE_KEY = 'lastDate';
+
+            // 模拟deviceready事件
+            window.addEventListener('load', function() {
+                console.log('浏览器测试模式');
+                initApp();
+
+                const checkInBtn = document.getElementById('checkInBtn');
+                checkInBtn.addEventListener('click', handleCheckIn);
+            });
+
+            function initApp() {
+                checkAndResetDaily();
+                loadRecords();
+            }
+
+            function checkAndResetDaily() {
+                const today = getTodayDate();
+                const lastDate = localStorage.getItem(DATE_KEY);
+
+                if (lastDate !== today) {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+                    localStorage.setItem(DATE_KEY, today);
+                }
+            }
+
+            function getTodayDate() {
+                const now = new Date();
+                return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+            }
+
+            function handleCheckIn() {
+                const btn = document.getElementById('checkInBtn');
+                btn.classList.add('ripple');
+                setTimeout(() => btn.classList.remove('ripple'), 600);
+
+                const now = new Date();
+                const timeString = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}:${String(now.getSeconds()).padStart(2, '0')}`;
+
+                const records = getRecords();
+                records.unshift({
+                    time: timeString,
+                    timestamp: now.getTime()
+                });
+
+                saveRecords(records);
+                loadRecords();
+            }
+
+            function getRecords() {
+                const recordsStr = localStorage.getItem(STORAGE_KEY);
+                return recordsStr ? JSON.parse(recordsStr) : [];
+            }
+
+            function saveRecords(records) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
+            }
+
+            function loadRecords() {
+                const records = getRecords();
+
+                const todayCount = document.getElementById('todayCount');
+                todayCount.textContent = records.length;
+
+                const recordsList = document.getElementById('recordsList');
+
+                if (records.length === 0) {
+                    recordsList.innerHTML = '<p class="empty-message">暂无记录，点击上方按钮开始打卡</p>';
+                } else {
+                    recordsList.innerHTML = records.map((record, index) => `
+                        <div class="record-item">
+                            <div class="record-icon">💧</div>
+                            <div class="record-time">第 ${records.length - index} 次 - ${record.time}</div>
+                        </div>
+                    `).join('');
+                }
+            }
+        </script>
+    </body>
+</html>
